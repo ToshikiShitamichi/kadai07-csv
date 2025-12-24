@@ -1,0 +1,83 @@
+/* デフォルトCSS変更 */
+p{
+    margin: 1px;
+}
+
+td{
+    vertical-align: baseline;
+}
+
+/* クラスCSS */
+.schedule-input {
+    width: 90%;
+    height: 10vh;
+}
+
+.df{
+    display: flex;
+    gap: 10px;
+}
+
+.schedule-output {
+    width: 90%;
+    height: 80vh;
+    display: flex;
+}
+
+.main {
+    width: 70%;
+}
+
+.month {
+    width: 90%;
+    display: flex;
+    justify-content: space-around;
+}
+
+.schedule {
+    width: 90%;
+    border-collapse: collapse;
+    table-layout: fixed;
+}
+
+.schedule-td{
+    height: 10vh;
+}
+
+.weekday{
+    text-align: center;
+}
+
+.schedule-date{
+    font-size: large;
+    margin-bottom: 10px;
+}
+
+.today{
+    border-color: blue;
+    background-color: rgba(0, 0, 255,0.05);
+}
+
+.schedule-content{
+}
+
+.sidebar {
+    width: 30%;
+}
+
+.sidebar-day{
+    border-bottom: 1px solid black;
+    margin-bottom: 10px;
+}
+
+.sidebar-date{
+    margin-bottom: 10px;
+}
+
+.sidebar-time{
+    font-size: small;
+}
+
+.sidebar-content{
+    margin-left: 10px;
+}
