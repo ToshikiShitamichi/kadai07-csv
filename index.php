@@ -1,18 +1,42 @@
 <?php
-var_dump($_POST);
-// exit();
+$file = fopen("data/schedule.json", "c+");
+flock($file, LOCK_EX);
+
+rewind($file);
+$schedule_json = stream_get_contents($file);
+$schedules = json_decode($schedule_json, true);
+
+if ($_SERVER["REQUEST_METHOD"] === "POST") {
+    $input_schedule = $_POST["input-schedule"];
+    $input_date = $_POST["input-date"];
+    $start_time = $_POST["start-time"];
+    $end_time = $_POST["end-time"];
+
+    $schedules[] = [
+        "schedule" => $input_schedule,
+        "date" => $input_date,
+        "start_time" => $start_time,
+        "end_time" => $end_time,
+    ];
+
+    usort($schedules, function ($a, $b) {
+        if ($a["date"] !== $b["date"]) {
+            return $a["date"] > $b["date"];
+        } else {
+            return $a["start_time"] > $b["start_time"];
+        }
+    });
+
+    $schedule_json = json_encode($schedules);
+    rewind($file);
+    ftruncate($file, 0);
+    fwrite($file, $schedule_json);
+}
+
+flock($file, LOCK_UN);
+fclose($file);
+
 ?>
-
-
-
-
-
-
-
-
-
-
-
 
 <!DOCTYPE html>
 <html lang="ja">
@@ -125,7 +149,7 @@ var_dump($_POST);
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 
     <!-- JS読み込み -->
-    <script src="./js/main.js"></script>
+    <script id="script" src="./js/main.js" data-param='<?php echo $schedule_json ?>'></script>
 </body>
 
 </html>
