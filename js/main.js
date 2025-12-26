@@ -23,6 +23,7 @@ function create_table(target_day, schedule) {
     $("#current-month").text(`${target_day.getMonth() + 1}月`);
     // カレンダーHTML初期化
     $(".schedule tbody").html("");
+    $(".sidebar").html("");
     let table_h = ""
 
     let day = 1
