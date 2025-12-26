@@ -1,17 +1,24 @@
 <?php
+// ファイルを読み書き可能形式で開く
 $file = fopen("data/schedule.json", "c+");
 flock($file, LOCK_EX);
 
+// 先頭にカーソルを合わせる(無いとjsonが壊れる可能性があるらしい)
 rewind($file);
+// ファイル全体を取得
 $schedule_json = stream_get_contents($file);
+// JSON→連想配列形式に変換
 $schedules = json_decode($schedule_json, true);
 
+// リクエストがPOSTの場合
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
+    // POSTデータの取得
     $input_schedule = $_POST["input-schedule"];
     $input_date = $_POST["input-date"];
     $start_time = $_POST["start-time"];
     $end_time = $_POST["end-time"];
 
+    // 連想配列に追加
     $schedules[] = [
         "schedule" => $input_schedule,
         "date" => $input_date,
@@ -19,6 +26,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         "end_time" => $end_time,
     ];
 
+    // 連想配列全体を日付・開始時間順にソート
     usort($schedules, function ($a, $b) {
         if ($a["date"] !== $b["date"]) {
             return $a["date"] > $b["date"];
@@ -27,12 +35,18 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         }
     });
 
+    // 連想配列→JSONに変換
     $schedule_json = json_encode($schedules);
+    // 先頭にカーソルを合わせる(無いとjsonが壊れる可能性があるらしい)
     rewind($file);
+    // ファイルの中身を空にする(無いとjsonが壊れる可能性があるらしい)
     ftruncate($file, 0);
+
     fwrite($file, $schedule_json);
     flock($file, LOCK_UN);
     fclose($file);
+
+    // リロードし再POSTを防ぐ
     header("Location:index.php");
     exit();
 }
@@ -46,7 +60,7 @@ fclose($file);
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>予定表</title>
+    <title>JSON予定表</title>
     <!-- GoogleFont読み込み -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined">
     <!-- CSS読み込み -->

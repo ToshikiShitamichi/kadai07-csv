@@ -1,6 +1,6 @@
 // 今日の日付を取得
 const today = new Date()
-const today_string = `${today.getFullYear()}-${(String(today.getMonth()+1)).padStart(2, "0")}-${String(today.getDate()).padStart(2, "0")}`
+const today_string = `${today.getFullYear()}-${(String(today.getMonth() + 1)).padStart(2, "0")}-${String(today.getDate()).padStart(2, "0")}`
 // 現在表示中のカレンダー
 let current_day = ""
 // JSONに保存されたカレンダー
@@ -61,12 +61,17 @@ function create_table(target_day, schedule) {
 
     let sidebar_id = "side-"
     let current_day = ""
+    // 保存された予定１件ずつ取得
     schedules.forEach(schedule => {
+        // カレンダーに予定を追加
         $(`#${schedule.date}`).append(`
             <p class="schedule-content">${schedule.start_time}- ${schedule.schedule}</p>
             `);
+        // 取得した予定が今日以降の場合
         if (schedule.date >= today_string) {
+            // 前回の日付と同日じゃない場合
             if (current_day !== schedule.date) {
+                // サイドバーに日付を追加
                 sidebar_id = `side-${schedule.date}`
                 $(".sidebar").append(`
                     <div class="sidebar-day" id="${sidebar_id}">
@@ -74,6 +79,7 @@ function create_table(target_day, schedule) {
                     </div>
                 `);
             }
+            // サイドバーに予定を追加
             $(`#${sidebar_id}`).append(`
                 <p>
                     <span class="sidebar-time">${schedule.start_time}-${schedule.end_time}</span>
@@ -81,6 +87,7 @@ function create_table(target_day, schedule) {
                 </p>
             `);
         }
+        // 今回の日付で更新
         current_day = schedule.date
     });
 }
