@@ -1,9 +1,9 @@
 /* デフォルトCSS変更 */
-p{
+p {
     margin: 1px;
 }
 
-td{
+td {
     vertical-align: baseline;
 }
 
@@ -13,7 +13,7 @@ td{
     height: 10vh;
 }
 
-.df{
+.df {
     display: flex;
     gap: 10px;
 }
@@ -40,44 +40,45 @@ td{
     table-layout: fixed;
 }
 
-.schedule-td{
+.schedule-td {
     height: 10vh;
 }
 
-.weekday{
+.weekday {
     text-align: center;
 }
 
-.schedule-date{
+.schedule-date {
     font-size: large;
     margin-bottom: 10px;
 }
 
-.today{
+.today {
     border-color: blue;
-    background-color: rgba(0, 0, 255,0.05);
+    background-color: rgba(0, 0, 255, 0.05);
 }
 
-.schedule-content{
+.schedule-content {
+    background-color: rgba(0, 0, 0, 0.05);
 }
 
 .sidebar {
     width: 30%;
 }
 
-.sidebar-day{
+.sidebar-day {
     border-bottom: 1px solid black;
     margin-bottom: 10px;
 }
 
-.sidebar-date{
+.sidebar-date {
     margin-bottom: 10px;
 }
 
-.sidebar-time{
+.sidebar-time {
     font-size: small;
 }
 
-.sidebar-content{
+.sidebar-content {
     margin-left: 10px;
 }

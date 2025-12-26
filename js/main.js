@@ -1,9 +1,10 @@
 // 今日の日付を取得
 const today = new Date()
+const today_string = `${today.getFullYear()}-${(String(today.getMonth()+1)).padStart(2, "0")}-${String(today.getDate()).padStart(2, "0")}`
 // 現在表示中のカレンダー
 let current_day = ""
 // JSONに保存されたカレンダー
-let schedule = ""
+let schedules = ""
 
 /**
  * 基準日に沿ってカレンダーを表示する関数
@@ -17,6 +18,7 @@ function create_table(target_day, schedule) {
     // 月の1日の曜日
     const startWeekday = first.getDay();
 
+
     // 画面の表示月更新
     $("#current-month").text(`${target_day.getMonth() + 1}月`);
     // カレンダーHTML初期化
@@ -29,18 +31,21 @@ function create_table(target_day, schedule) {
         table_h += `<tr>`
         // 日ループ
         for (j = 0; j < 7; j++) {
+            let today_class = ""
             const target_day2 = new Date(target_day.getFullYear(), target_day.getMonth(), day, today.getHours(), today.getMinutes(), today.getSeconds(), today.getMilliseconds())
 
             if ((i * 7 + j < startWeekday) || (day > lastDate)) {
                 // 前月・次月にかかる部分は省略
                 table_h += `<td class="schedule-td"></td>`
-            } else if (target_day2.getTime() === today.getTime()) {
-
-                // 今日の日付と同じ場合はCSS適用
-                table_h += `<td id=${target_day.getFullYear()}${(target_day.getMonth() + 1).toString().padStart(2, "0")}${day.toString().padStart(2, "0")} class="schedule-td today"><p class="schedule-date">${day}</p></td>`
-                day++
             } else {
-                table_h += `<td id=${target_day.getFullYear()}${(target_day.getMonth() + 1).toString().padStart(2, "0")}${day.toString().padStart(2, "0")} class="schedule-td"><p class="schedule-date">${day}</p></td>`
+                // 今日の日付と同じ場合はCSS適用
+                if (target_day2.getTime() === today.getTime()) {
+                    today_class = " today"
+                }
+                // 日付idを変数として保存
+                set_id = `${target_day.getFullYear()}-${(target_day.getMonth() + 1).toString().padStart(2, "0")}-${day.toString().padStart(2, "0")}`
+                // 追加するHTML要素の作成
+                table_h += `<td id="${set_id}" class="schedule-td${today_class}"><p class="schedule-date">${day}</p></td>`
                 day++
             }
         }
@@ -53,21 +58,44 @@ function create_table(target_day, schedule) {
     }
     // HTML表示
     $(".schedule tbody").html(table_h);
+
+    let sidebar_id = "side-"
+    let current_day = ""
+    schedules.forEach(schedule => {
+        $(`#${schedule.date}`).append(`
+            <p class="schedule-content">${schedule.start_time}- ${schedule.schedule}</p>
+            `);
+        if (schedule.date >= today_string) {
+            if (current_day !== schedule.date) {
+                sidebar_id = `side-${schedule.date}`
+                $(".sidebar").append(`
+                    <div class="sidebar-day" id="${sidebar_id}">
+                        <p class="sidebar-date">${schedule.date}</p>
+                    </div>
+                `);
+            }
+            $(`#${sidebar_id}`).append(`
+                <p>
+                    <span class="sidebar-time">${schedule.start_time}-${schedule.end_time}</span>
+                    <span class="sidebar-content">${schedule.schedule}</span>
+                </p>
+            `);
+        }
+        current_day = schedule.date
+    });
 }
 
 // アクセス時に今月のカレンダーを作成
 $(window).on("load", function () {
+    $("#input-date").val(today_string);
     // 表示中の月を更新
     current_day = today.getTime()
     // JSONに保存されたスケジュールを取得
-    schedule = JSON.parse($("#script").attr("data-param"));
+    if ($("#script").attr("data-param") !== "") {
+        schedules = JSON.parse($("#script").attr("data-param"));
+    }
     // カレンダー作成
-    create_table(today, schedule)
-
-    console.log(schedule);
-
-    $(".sidebar").text(schedule[0].date);
-
+    create_table(today, schedules)
 });
 
 // 前月のカレンダーに更新
@@ -79,7 +107,7 @@ $("#pre_month").on("click", function () {
     // 表示中の月を更新
     current_day = pre_month.getTime()
     // カレンダー作成
-    create_table(pre_month, schedule)
+    create_table(pre_month, schedules)
 });
 
 // 次月のカレンダーに更新
@@ -91,5 +119,5 @@ $("#next_month").on("click", function () {
     // 表示中の月を更新
     current_day = next_month.getTime()
     // カレンダー作成
-    create_table(next_month, schedule)
+    create_table(next_month, schedules)
 });

@@ -31,11 +31,13 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     rewind($file);
     ftruncate($file, 0);
     fwrite($file, $schedule_json);
+    flock($file, LOCK_UN);
+    fclose($file);
+    header("Location:index.php");
+    exit();
 }
-
 flock($file, LOCK_UN);
 fclose($file);
-
 ?>
 
 <!DOCTYPE html>
@@ -124,24 +126,6 @@ fclose($file);
             </table>
         </div>
         <div class="sidebar">
-            <div class="sidebar-day">
-                <p class="sidebar-date">12月1日</p>
-                <p>
-                    <span class="sidebar-time">13:00-17:00</span>
-                    <span class="sidebar-content">授業</span>
-                </p>
-            </div>
-            <div class="sidebar-day">
-                <p class="sidebar-date">12月2日</p>
-                <p>
-                    <span class="sidebar-time">9:00-12:00</span>
-                    <span class="sidebar-content">アルバイト</span>
-                </p>
-                <p>
-                    <span class="sidebar-time">13:00-17:00</span>
-                    <span class="sidebar-content">P2Pトレーニング</span>
-                </p>
-            </div>
         </div>
     </div>
 
